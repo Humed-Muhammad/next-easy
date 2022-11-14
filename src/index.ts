@@ -3,23 +3,24 @@ import multer from "multer";
 import { NextApiRequest, NextApiResponse } from "next";
 
 interface MulterConfig {
-  des: string;
-  fileName: string;
-  storage: "diskStorage" | "memoryStorage";
-  uploadKey: string;
+  des?: string;
+  fileName?: string;
+  storage?: "diskStorage" | "memoryStorage";
+  uploadKey?: string;
 }
 interface INextFileUploader {
-  multerConfig: MulterConfig;
-  middlewares: any[];
+  multerConfig?: MulterConfig;
+  middlewares?: any[];
 }
 
-export const nextFileUploader = (data: INextFileUploader) => {
-  const { multerConfig, middlewares } = data;
+export const nextFileUploader = (data?: INextFileUploader) => {
+  const { multerConfig, middlewares } = data!;
   const upload = multer({
-    storage: multer[multerConfig.storage]({
-      destination: multerConfig.des || "./public/uploads",
+    storage: multer[`${multerConfig?.storage}`]({
+      destination: multerConfig?.des || "./public/uploads",
+      // @ts-ignore
       filename: (_req, file, cb) =>
-        cb(null, multerConfig.fileName || file.originalname),
+        cb(null, multerConfig?.fileName || file.originalname),
     }),
   });
 
@@ -34,9 +35,9 @@ export const nextFileUploader = (data: INextFileUploader) => {
     },
   });
 
-  apiRoute.use(upload.array(multerConfig.uploadKey || "theFiles"));
+  apiRoute.use(upload.array(multerConfig?.uploadKey || "theFiles"));
 
-  middlewares.map((item) => apiRoute.use(item));
+  middlewares?.map((item) => apiRoute.use(item));
 
   const config = {
     api: {
