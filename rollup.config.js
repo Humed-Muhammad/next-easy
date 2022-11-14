@@ -22,21 +22,6 @@ export default merge(baseConfig, [
       }),
       terser(),
     ],
-  },
-  {
-    input: "./dist/cjs/index.js",
-    output: {
-      dir: "lib/cjs",
-      format: "cjs",
-      exports: 'named'
-    },
-    context: "window",
-    plugins: [
-      typescript({
-        rollupCommonJSResolveHack: false,
-        clean: true,
-      }),
-      terser()
-    ],
+    external: ["multer", "next-connect"],
   },
 ]);

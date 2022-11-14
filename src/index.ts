@@ -14,13 +14,12 @@ interface INextFileUploader {
 }
 
 export const nextFileUploader = (data?: INextFileUploader) => {
-  const { multerConfig, middlewares } = data!;
   const upload = multer({
-    storage: multer[`${multerConfig?.storage}`]({
-      destination: multerConfig?.des || "./public/uploads",
+    storage: multer[`${data?.multerConfig?.storage}`]({
+      destination: data?.multerConfig?.des || "./public/uploads",
       // @ts-ignore
       filename: (_req, file, cb) =>
-        cb(null, multerConfig?.fileName || file.originalname),
+        cb(null, data?.multerConfig?.fileName || file.originalname),
     }),
   });
 
@@ -35,9 +34,9 @@ export const nextFileUploader = (data?: INextFileUploader) => {
     },
   });
 
-  apiRoute.use(upload.array(multerConfig?.uploadKey || "theFiles"));
+  apiRoute.use(upload.array(data?.multerConfig?.uploadKey || "theFiles"));
 
-  middlewares?.map((item) => apiRoute.use(item));
+  data?.middlewares?.map((item) => apiRoute.use(item));
 
   const config = {
     api: {
